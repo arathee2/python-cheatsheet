@@ -115,7 +115,7 @@ def f(n):                     # f --> generator object; produces results one at 
 		yield i ** 2          # yield statement returns an iterator that remembers where it left off
 
 seq = f(i)                    # function call returns a generator object that supports __next__()
-for i in seq:                 # seq makes f(n) run in each iteration; computation time is split across result request
+for i in seq:                 # seq makes f(n) run in each iteration; computation time is split across result requests
 	print(i)
 
 x = f(3)                      # x is a generator object; generators are their own iterators
