@@ -1,0 +1,158 @@
+------------------------------------------------------------------------------
+Basics
+------------------------------------------------------------------------------
+# syntax
+def fname(arguments):  # fname points to a function object after def is executed
+	# code
+	return object      # return statemenet is optional; yield is alternative
+
+- `def` is executed when the module containing it is imported or the script is run. It creates a function object. The function name points to the function object.
+- `return` is optional. You could either have no return statement or return followed by nothing (None is returned in both cases).
+- Arguments are passed by reference. Therefore mutable objects will be effected by the code inside the function.
+
+# alternative names
+def func(): ...        # func --> function object
+othername = func       # othername --> function object
+othername()            # call function object with the other name
+func()                 # call function object with the original name
+
+# first class objects: continuation to alternative names
+def a(): ...
+def b(a): ...          # functions could be treated like any other objects
+b(a)                   # a is a function object; a() is a function call
+[a, b]                 # list of function objects
+
+# nested functions: avoid them
+def maker(N):
+	def action(X):     # creates a function object
+		return X ** N
+	return action
+func = maker(2)        # func --> action function object; on the contrary `func = maker` means func --> maker function object
+func(5)                # returns 5 ** 2
+
+# lambda functions
+func = lambda arg1=def1, arg2, arg3: arg1 + ar2 + agr3
+func(1, 2, 3)          # returns 6
+
+------------------------------------------------------------------------------
+Scope
+------------------------------------------------------------------------------
+Local variable: a variable that is assigned a value inside a function.
+Nonlocal variable: a variable that is assigned a value in the enclosing function.
+Global variable: a variable that is assigned at a module level or imported from other module.
+
+Assignment refers to = statements, function arguments, imports, and function definitions.
+Also keep in mind references, a name might be local but it could be pointing to a global object.
+
+# LNGB rule for variable reference and assignment
+Variable lookup order in a function is: local --> nonlocal --> global --> builtins
+
+# Comprehension statements always localize their variables.
+
+# While and for loops do not localize their variables. You can use them after the loops.
+
+# Variables in try-except such as except E as X are local to except.
+
+# global
+X = 88              # global X
+def func():
+	global X        # refers and changes global X; searches global and then builtins; don't have to pre-exist
+	X = 99          # global X: outside def
+func()
+print(X)            # prints 99
+
+# nonlocal
+def a():
+	x = 3
+	def b():
+		nonlocal x   # refers and changes x from enclosing scope; searches enclosing scopes only inner to outer (skipping its own scope, global and builtins); have to pre-exist in enclosing scope
+		x += 1       # allowed to change it if nonlocal
+	return nested
+
+------------------------------------------------------------------------------
+Arguments
+------------------------------------------------------------------------------
+# arguments are always passed by assignment.
+def f(a, b): ...
+f(3, 4)           # a --> 3, b --> 4
+
+# positional arguments: the default, matched from left to right
+def func(name): ...
+func(value)
+
+# keyword arguments: matched by argument name, not position
+def func(name)
+func(name=value)              # not to be confused with default argument which takes place in function header
+
+# default arguments           # beware of mutable defaults, they retain their state across function calls
+def func(name=value): ...     # not to be confused with keyword argument which takes place in function call
+
+# variable argument collection
+def func(*args): ...          # *args collects remaining unmatched positional arguments
+func(1, 2, 3)                 # args = (1, 2, 3)
+
+def func(**kwargs): ...       # **kwargs collects remaining unmatched keyword arguments
+func(a=1, b=2, c=3)           # kwargs = {'a'=1, 'b'=2, 'c'=3}
+
+# variable argument unpacking
+def func(a, b): ...
+func(*[1, 2])                 # unpack the list (or any iterable), equivalent to func(a=1, b=2)
+
+def func(a, b): ...
+func(**{'a'=1, 'b'=2})        # unpack the dictionary, equivalent to func(a=1, b=2)
+
+# argument syntax ordering rules
+function header: positional, default, *args, keyword only, **args
+function header: def f(pos1, pos2, /, pos_or_kwd, *, kwd1, kwd2): ...  # this is taken from Python documentation and does not mention argument collection or argument unpacking
+function call: positional, keyword, *args, keyword, **args
+
+------------------------------------------------------------------------------
+Generators
+------------------------------------------------------------------------------
+# generator functions
+def f(n):                     # f --> generator object; produces results one at a time on-demand
+	for i in range(n):        # generators retain local scope and code position in memory
+		yield i ** 2          # yield statement returns an iterator that remembers where it left off
+
+seq = f(i)                    # function call returns a generator object that supports __next__()
+for i in seq:                 # seq makes f(n) run in each iteration; computation time is split across result request
+	print(i)
+
+x = f(3)                      # x is a generator object; generators are their own iterators
+x.__next__()                  # yield returns 0
+x.__next__()                  # yield returns 1
+x.send(5)                     # send works like __next__() but forces yield to return 5 instead of 2
+x.__next__()                  # raises StopIteration exception because for i in range(3) is done iterating
+
+# generator comprehension
+(i ** 2 for i in range(n)     # generator object
+ if i % 2 == 0)
+
+# [optional] multiple yields
+def f(n):
+	for i in range(n)         # alternative `yield from range(n)`
+	for i in range(2)         # this runs after the above statement encounters StopIteration
+
+list(f(5))                    # [0, 1, 2, 3, 4, 0, 1]
+
+------------------------------------------------------------------------------
+Advanced Topics
+------------------------------------------------------------------------------
+# introspection
+def func(): ...
+dir(func)
+func.__name__
+func.__annotations__
+func.__code__
+dir(func.__code__)
+func.__code__.co_varnames
+
+
+# attributes
+def func(): ...
+func.attr = value             # used to save state if needed
+
+# annotations: additional information attached to a function object
+from typing import List
+def func(a: 99, c: List[int]=[3, 4]) -> int:  # annotations are arbitrary and optional
+	...
