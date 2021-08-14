@@ -2,10 +2,27 @@
 Benchmark
 ------------------------------------------------------------------------------
 import time
-time.clock()  # optimal for Windows
-time.time()   # optimal for other operating systems
+time.clock()  # seconds past since Jan 1, 1970; optimal for Windows
+time.time()   # seconds past since Jan 1, 1970; optimal for other operating systems
 
+import timeit
+setup_code = "L = [1, 2, 3]"
+test_code = """
+	i = 0                          
+	while i < len(L):            # alternatively, use '\n' for line breaks and '\t' for indentation
+		L[i] += 1
+		i += 1
+"""
+timeit.timeit(setup=setup_code,  # will run before test code but won't contribute to measured time 
+			  stmt=test_code,
+			  number=100)        # run code `number` times and return this total time
+timeit.repeat(setup=setup_code,
+			  stmt=test_code, 
+			  number=100,
+			  repeat=5)          # repeat the above `repeat` times and return a vector of length `repeat`
 
+$python -m timeit -n 100 -r 5 -s "L=[1, 2, 3]" "i=0\nwhile i < len(L):\n\tL[i]+=1\n\ti += 1"
+$python -m timeit -n 100 -r 5 -s "L=[1, 2, 3]" "i=0" "while i<len(L):" "    L[i]+=1" "    i+=1"
 
 ------------------------------------------------------------------------------
 Regular Expressions
