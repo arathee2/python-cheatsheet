@@ -1,0 +1,51 @@
+------------------------------------------------------------------------------
+Modules
+------------------------------------------------------------------------------
+- Modules are .py files where names (variables, functions, classes and other module names) are created. These names are called attributes.
+- Python program contains one main script and zero or more modules.
+- Modules help divide namespaces.
+
+------------------------------------------------------------------------------
+Importing
+------------------------------------------------------------------------------
+- Importing a module gives the importer the access to the imported attributes accessed using `modulename.attributename` syntax. Only global names (names except the ones nested inside def or class) cpuld be accessed.
+- Module name must follow Python variable name convention since it is imported as a variable name itself once imported.
+- Scope-wise, an importer can only see the code inside importee after importing. And the code inside an importee can never see the code inside the importer.
+
+3-step process:
+1. Find module's .py file. Order as follows:
+	1a. Home directory [Automatic]: Directory that contains program's main script.
+	1b. PYTHONPATH directories [Manual]: A shell environment variable that contails a list of directory paths separated by colons on Unix and semicolons on Windows. E.g. export PYTHONPATH '/dirA:/dirB'
+	1c. Standard libraries [Automatic]
+	1d. .pth files [Manual]: A text file containing directory paths in individual lines. Put these inside where Python is installed.
+	1e. Site packages [Automatic]
+	Note: sys.path contains all the above directories in that order. You could add paths manually by appending to the sys.path list from inside Python.
+
+2. Compile file to bytecode. This results in a __pycache__ directory that contains .pyc bytecode files.
+3. Run module's code line by line from top to bottom.
+
+- `import` and `from` are assignmnet statements.
+- `import` lets fetch all names of the module.
+- `from` lets fetch a particular name. Copies attributes only (not the objects they reference) to the current namespace.
+
+# import statement
+import modulename                    # modulename becomes a variable
+modulename.functionname()            # access its attributes through modulename
+
+# from statement
+from modulename import functionname  # allows adding specific attributes to current namespace
+functionname()                       # directly access an attribute
+
+from modulename import *             # imports all attributes present at the top level to the current namespace
+functionname()
+
+# reload function
+import modulename
+from modulename import funcname
+from imp import reload               # reruns 3-step process for importee without restarting importer; effects modules imported through `import` statements, not through `from` statements
+reload(modulename)                   # update modulename object in-place; modulename.funcname gets updated; funcname still points to the old object
+
+# mutability principles apply to imports
+from external import x, y            # x is a integer, y is a list, functionally equivalent to `x = external.x; y = external.y`
+x = 0                                # x in external does not change since it's immutable
+y[0] = 1                             # y in external changes since it's mutable and y here and y in external both point to the same object
