@@ -1,43 +1,75 @@
 ------------------------------------------------------------------------------
-Modules
+Modules and Packages
 ------------------------------------------------------------------------------
-- Modules are .py files where names (variables, functions, classes and other module names) are created. These names are called attributes.
-- Python program contains one main script and zero or more modules.
-- Modules help divide namespaces.
+- Module is a .py files where names (variables, functions, classes and other module names) are created. These names are called module attributes. Modules help divide namespaces.
+- Package is a directories containing __init__.py file, submodules and subpackages. Attributes of a package are submodules, subpackages and names in __init__.py.
+- Python program contains one main script and zero or more modules and packages.
 
 ------------------------------------------------------------------------------
-Importing
+Importing Modules and Packages
 ------------------------------------------------------------------------------
-- Importing a module gives the importer the access to the imported attributes accessed using `modulename.attributename` syntax. Only global names (names except the ones nested inside def or class) cpuld be accessed.
-- Module name must follow Python variable name convention since it is imported as a variable name itself once imported.
-- Scope-wise, an importer can only see the code inside importee after importing. And the code inside an importee can never see the code inside the importer.
+- Importing a module or a package gives the importer the access to the imported attributes accessed using `modulename.attributename` or 'packagename.attributename' syntax. Only global names (names except the ones nested inside def or class) could be accessed.
+- Module and package names must follow Python variable name convention since these names become variable names when imported.
+- Scope-wise, an importer can only see the code inside importee after importing. An importee can never see code inside importer.
 
-3-step process:
-1. Find module's .py file. Order as follows:
+3-step process to find modules and packages:
+1. Modules are .py files, packages are directories that contain __init__.py file. Order to search module and package names is as follows:
 	1a. Home directory [Automatic]: Directory that contains program's main script.
 	1b. PYTHONPATH directories [Manual]: A shell environment variable that contails a list of directory paths separated by colons on Unix and semicolons on Windows. E.g. export PYTHONPATH '/dirA:/dirB'
 	1c. Standard libraries [Automatic]
 	1d. .pth files [Manual]: A text file containing directory paths in individual lines. Put these inside where Python is installed.
 	1e. Site packages [Automatic]
-	Note: sys.path contains all the above directories in that order. You could add paths manually by appending to the sys.path list from inside Python.
+	Note: sys.path is a Python list that contains all the above directories in that order. You could add paths manually by appending to the sys.path list from inside Python.
 
-2. Compile file to bytecode. This results in a __pycache__ directory that contains .pyc bytecode files.
-3. Run module's code line by line from top to bottom.
+2. For module, compile its .py file to bytecode. For package, compile its __init__.py file to bytecode. This results in a __pycache__ directory that contains .pyc bytecode files.
+3. Run the code line by line from top to bottom.
 
 - `import` and `from` are assignmnet statements.
-- `import` lets fetch all names of the module.
+- `import` lets fetch all attributes of a module or package.
 - `from` lets fetch a particular name. Copies attributes only (not the objects they reference) to the current namespace.
 
+------------------------------------------------------------------------------
+Syntax
+------------------------------------------------------------------------------
 # import statement
-import modulename                    # modulename becomes a variable
-modulename.functionname()            # access its attributes through modulename
+import mname                         # executes mname.py; mname becomes a variable; mname's parent dir must be in search path
+mname.fname()                        # access its attributes through mname
+
+import pname.mname                   # executes pname/__init__.py and mname.py; pname's parent dir must be in search path
+mname.fname()
+pname.attrname                       # error; pname is not in namespace, mname is
+
+import pname1.pname2.mname           # executes pname1/__init__.py, pname2/__init__.py and mname.py
+mname.fname()
+
+import pname1.pname2                 # executes pname1/__init__.py, pname2/__init__.py
+pname2.mname.fname()
+
+import pname1                        # executes pname1/__init__.py
+pname1.pname2.mname.fname()
 
 # from statement
-from modulename import functionname  # allows adding specific attributes to current namespace
-functionname()                       # directly access an attribute
+from mname import fname              # execute mname.py; fname becomes available in current namespace directly
+fname()
+mname.fname()                        # error; cannot access modulename now
 
-from modulename import *             # imports all attributes present at the top level to the current namespace
-functionname()
+from pname1 import pname2            # execute pname1/__init.py, pname2/__init__.py
+pname2.mname.fname()
+
+from mname import *                  # execute mname.py; imports all top-level attributes to the current namespace for direct access
+fname()
+
+from pname import *                  # execute pname/__init__.py; __all__ contains list of submodules and subpackages imported automatically when using the `from name import *` syntax
+pname.mname.fname()                  # pname's __init__.py's __all__ list must have mname
+x                                    # a top-level variable, function or class name present in pname/__init__.py
+
+from pack1.pack2 import *            # executes pname1/__init__.py, pname2/__init__.py
+mname.fname()                        # pname2's __init__.py's __all__ list must have mname
+x                                    # a top-level variable, function or class name present in pname2/__init__.py
+
+# data hiding
+from mname import *                  # load names listed in __all__; if __all__ is absent, load all names except the ones that start with a single underscore
+from pname import *                  # load names listed in __all__ inside __init__.py; if __all__ is absent, load all names in __init.py__, submodule and subpackage names
 
 # reload function
 import modulename
@@ -49,3 +81,36 @@ reload(modulename)                   # update modulename object in-place; module
 from external import x, y            # x is a integer, y is a list, functionally equivalent to `x = external.x; y = external.y`
 x = 0                                # x in external does not change since it's immutable
 y[0] = 1                             # y in external changes since it's mutable and y here and y in external both point to the same object
+
+------------------------------------------------------------------------------
+Relative Imports
+------------------------------------------------------------------------------
+from . import module
+from .. import module
+
+------------------------------------------------------------------------------
+Namespace Package
+------------------------------------------------------------------------------
+- A directory without __init__.py is imported as a namespace package.
+- A namespace package allows a package to be distributed in multiple directories none of which should have __init__.py.
+- For namespace packages, the search ends only when all search paths have been traversed to determine all physical paths of the package.
+- If a __init__.py file is found during the traversal of a namespace package, it is read as a regular package and the search for a namespace package with that name is stopped and abandoned immediately even if the package was found at multiple places before finding the __init__.py file. This is why namespace packages must not have __init__.py file.
+- E.g. `import pname` would give access to attributes in codeA/pname/... and codeB/pname/...
+- Everything else works the same (including reltive imports).
+
+# one big difference
+import pname.mname
+pname                                # pname is accesible for namespace packages, not for regular packages
+
+------------------------------------------------------------------------------
+Advanced
+------------------------------------------------------------------------------
+# module attrbiutes
+- __name__: If file is run as a top-level program, __name__ is '__main__' else it is the name of the module without the .py extension.
+- __file__: Contains filepath of a module.
+
+# metaprogramming: the following four are equivalent
+modulename.attrname
+modulename.__dict__['attrname']
+sys.modules['modulename'].attrname
+getattr(modulename, 'attrname')
