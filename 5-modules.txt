@@ -76,11 +76,17 @@ import modulename
 from modulename import funcname
 from imp import reload               # reruns 3-step process for importee without restarting importer; effects modules imported through `import` statements, not through `from` statements
 reload(modulename)                   # update modulename object in-place; modulename.funcname gets updated; funcname still points to the old object
+reload(funcname)                     # do not use reload with from imports! makes life complicated!
 
 # mutability principles apply to imports
 from external import x, y            # x is a integer, y is a list, functionally equivalent to `x = external.x; y = external.y`
 x = 0                                # x in external does not change since it's immutable
 y[0] = 1                             # y in external changes since it's mutable and y here and y in external both point to the same object
+
+# dynamic import
+import importlib
+mname = importlib.import_module(mname_as_string)
+exec(f'import {mname_as_string}')
 
 ------------------------------------------------------------------------------
 Relative Imports
@@ -114,3 +120,4 @@ modulename.attrname
 modulename.__dict__['attrname']
 sys.modules['modulename'].attrname
 getattr(modulename, 'attrname')
+
