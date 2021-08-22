@@ -19,16 +19,49 @@ Concepts
 ------------------------------------------------------------------------------
 Syntax
 ------------------------------------------------------------------------------
-class ClassName(SuperClassA, SuperClassB):    # class --> ClassName object
-    self.attrA = ...                          # an attribute that will belong to ClassName instances
+class ClassName(SuperClassA, SuperClassB):        # class --> ClassName object; this statement runs all statements within class body resulting in creation of class attributes: static names and method names
+    attrA = ...                                   # static attribute: shared across all instances; access these using `ClassName.attrA`
+    self.attrA = ...                              # instance-specific attribute; access these using `instance.attrA`
     
-    def methodName(self, arg):                # an attribute similar to attrA; a method; could be accessed by ClassName.methodName or called by ClassName.methodName(arg)
+    def methodName(self, arg):                    # an attribute similar to attrA; a method; could be accessed by `ClassName.methodName` or called by `ClassName.methodName(arg)`
+        SuperClassA.methodName(self, arg)         # calls SuperClassA's methodName; without this call, the overrided `ClassName.methodName` is run
         print(self.attrA)
         print(arg)
 
-ClassName.attrB = ...                         # possible but stupid; class attribute: instances will be able to access this attribute
-ClassName.anotherMethod = someMethod(obj)     # same as above but for methods (remember, methods are attributes); this is why methods need `self` argument (`obj` in this case)
+ClassName.attrB = ...                             # possible but stupid; class attribute: instances will be able to access this attribute
+ClassName.anotherMethod = someMethod(obj)         # same as above but for methods (remember, methods are attributes); this is why methods need `self` argument (`obj` in this case)
 instance = ClassName()
-instance.attrC = ...                          # possible but stupid; instance attribute: no other instances can access this attribute
-instance.methodName(0)                        # if self.attrA was not assigned (e.g. if assignment was in another function) this method call would be an error
+instance.attrC = ...                              # possible but stupid; instance attribute: no other instances can access this attribute
+instance.methodName(0)                            # if self.attrA was not assigned (e.g. if assignment was in another function) this method call would be an error
+
+class Person:
+      def __init__(self, name, age):              #  constructor
+          self.name = name
+          self.age = age
+
+      def set_name(name):
+          self.name = name
+          
+      def get_name(self):
+          return self.name
+
+      def __repr__(self):
+          return repr_representation              # returns a string that shows how the object was constructed
+
+      def __str__(self):
+          return string_representation            # string representation used by print(instance) and str(instance)
+
+      def _method_name(self):                     # method name starting with _ are meant to be used within this class; overriding these is possible; use __ to avoid overriding
+          ...
+
+      def __method_name(self):                    # this method name is expanded to Person.__method_name(self) to avoid name clash when overriding this method
+          ...
+
+class Manager(Person):
+      def get_name():
+          Person.get_name(self, 'Mgr ' + name)    # calling parent's method
+
+manager = Manager('John', 40)
+manager.__dict__                                  # attributes and values of this class (excludes superclass attributes)
+manager.__class__                                 # has in turn another attributes such as __name__ and __bases__
 

@@ -39,3 +39,22 @@ string = 'abc'
 
 # substitute
 
+------------------------------------------------------------------------------
+Persistent Storage
+------------------------------------------------------------------------------
+# save object to disk
+import pickle
+
+# save object to disk using key-value pair
+import shelve
+db = shelve.open(filepath)
+db['ml_model'] = model
+db['plot'] = plot
+db.close()
+
+# load
+db = shelve.open(filepath)
+model = db['model']
+plot = db['plot']
+db.close()
+
