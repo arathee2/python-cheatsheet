@@ -62,12 +62,21 @@ class Person:
       def __del__(self):                          # destructor
           pass
 
-      def __add__(self, other):                   # used when object is used with + operator; could return any type of result
+      def __add__(self, other):                   # invoked when `instance + other`; could return any type of result
           pass
 
-      def __sub__(self, other):                   # used with - operator
+      def __sub__(self, other):                   # invoked when `instance - other`
           pass
 
+      def __radd(self, other):                    # invoked when `other + instance` 
+          pass
+
+      def __iadd__(self, other):                  # invoked when `instance += other`; this is an optional method (for efficient in-place addition) because fallback is __add__
+          pass
+
+      def __call__(self, *args, **kwargs):        # invoked when `object(*args, **kwargs)` i.e. when object is called. Arguments could be arbitrarily defined
+          pass
+      
       def __getitem__(self, index):               # for index and slice reference expressions; also used as fallback iterator by repeatedly indexing from 0 until StopIteration occurs
           if isinstance(index, int):              # when instance[i] is invoked, i is passed as the second argument
               pass
@@ -77,6 +86,41 @@ class Person:
       def __setitem__(self, index, value):        # for index and slice assignments
           pass
 
+      def __iter__(self):                         # returns iterator object upon running `iter(object)`; iterator object has to have the __next__() method; return self and implement __next__ in the same class for single iteration scan; return an iterable object that is implemented in a different class with __next__ to support multiple scans
+          pass
+
+      def __next__(self):                         # invoked when `next(object)` or `for i in object:` is run; returns the next item in sequence; usually implemented in iterator class
+          pass
+
+      def __contains__(self, value):              # invoked when doing memberships tests such as x in y; return True is class contains value; fallback methods in case this is absent are __iter__ and __getitem__
+          pass
+
+      def __getattr__(self, attrname):            # invoked when `object.attrname` or `getattr(object, attrname)` i.e. attribute reference - for an undefined attribute; can be used to emulate attribute privacy
+          if attrname == 'age'
+              return 40
+          else:
+              raise AttributeError(attrname)
+
+      def __getattribute__(self, attrname):       # invoked when `object.attrname` i.e. attribute reference - for all attributes, not just undefiend ones; can be used to emulate attribute privacy
+          pass
+          
+      def __setattr__(self, attrname, value):     # invoked when `object.attrname = value` or `setattr(object, attrname, value)` i.e. attribute assignment for all attributes, not just undefined ones; can be used to emulate attribute privacy
+          if attrname == 'age':
+              self.__dict__[attrname] = value     # don't do self.attrname = value because that calls __setattr__ again ending up in an infinite loop
+          else:
+              raise AttributeError(attrname,
+              'cannot be assigned')
+
+      def __delattr(self, attrname):              # invoked when `del object.attrname`
+          if attrname in self__dict__:
+             del self.__dict__[attrname]
+          else:
+          raise AttributeError(attrname,
+          ' does not exist!')
+
+      def __lt__(self, other):                   # invoked when `object < other`; all comparison operators have their correponding methods
+          return self.data < other
+      
       def __index__(self):                        # invoked when bin(instance), oct(instance) and hex(instance) is encountered
           return hash
 
@@ -86,11 +130,11 @@ class Person:
       def get_name(self):
           return self.name
 
-      def __repr__(self):
-          return repr_representation              # returns a string that shows how the object was constructed
+      def __str__(self):                          # returns string representation of object when `print(object)` and `str(object)`
+          return string_representation
 
-      def __str__(self):
-          return string_representation            # string representation used by print(instance) and str(instance)
+      def __repr__(self):                         # returns a string when `repr(object)` that shows how the object was constructed; used as fallback when __str__ is not present
+          return repr_representation
 
       def _method_name(self):                     # method name starting with _ are meant to be used within this class; overriding these is possible; use __ to avoid overriding
           ...
