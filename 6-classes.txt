@@ -30,7 +30,10 @@ Syntax
 class ClassName(SuperClassA, SuperClassB):        # class --> ClassName object; this statement runs all statements within class body resulting in creation of class attributes: static names and method names
     attrA = ...                                   # class attribute (static): shared across all instances; access these using `ClassName.attrA`
     self.attrA = ...                              # instance attribute; access these using `instance.attrA`
-    
+    _attrA = ...                                  # pseudo private attribute: meant to be a private attribute as per convention; leading underscore has no special meaning for the interpreter
+    self._attrA                                   # pseudo private attribute is also applicable to instance attributes and methods
+    __attrA = ...                                 # name mangling: names starting with two leading underscores that don't end with two underscores are expanded to _ClassName__attrA to avoid name collision in class hierarchy
+    self.__attrA = ...                            # name mangling is applicable to instance attributes (self._ClassName__attrA) and methods (_ClassName__methodName)
     def methodName(self, arg):                    # an attribute similar to attrA; a method; could be accessed by `ClassName.methodName` or called by `ClassName.methodName(arg)`
         SuperClassA.methodName(self, arg)         # calls SuperClassA's methodName; without this call
         print(self.attrA)
@@ -111,16 +114,22 @@ class Person:
               raise AttributeError(attrname,
               'cannot be assigned')
 
-      def __delattr(self, attrname):              # invoked when `del object.attrname`
+      def __delattr__(self, attrname):            # invoked when `del object.attrname`
           if attrname in self__dict__:
              del self.__dict__[attrname]
           else:
           raise AttributeError(attrname,
           ' does not exist!')
 
-      def __lt__(self, other):                   # invoked when `object < other`; all comparison operators have their correponding methods
+      def __lt__(self, other):                    # invoked when `object < other`; all comparison operators have their correponding methods
           return self.data < other
-      
+
+      def __bool__(self):                         # invoked when `bool(object)` and inside if statements; if not present, __len__ is used as fallback; if __bool__ and __len__ both are missing then True is returned regardless
+          pass
+
+      def __len__(self):                          # invoked when `len(object)`; used as fallback for `bool(object)`, False if length is zero, True otherwise
+          pass
+          
       def __index__(self):                        # invoked when bin(instance), oct(instance) and hex(instance) is encountered
           return hash
 
@@ -139,7 +148,7 @@ class Person:
       def _method_name(self):                     # method name starting with _ are meant to be used within this class; overriding these is possible; use __ to avoid overriding
           ...
 
-      def __method_name(self):                    # this method name is expanded to Person.__method_name(self) to avoid name clash when overriding this method
+      def __method_name(self):                    # this method name is expanded to _Person.__method_name to avoid name clash when overriding this method
           ...
 
 class Manager(Person):
