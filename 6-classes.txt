@@ -1,10 +1,10 @@
 ------------------------------------------------------------------------------
 Concepts
 ------------------------------------------------------------------------------
-- A class has three kinds of attributes (fields and methods): instance and class. Each of these have their own namespaces.
+- A class has two kinds of attributes (fields and methods): instance and class. Each of these have their own namespaces.
 - Attributes can be created inside as well as outside the class.
 - Attribute assignment (object.attr = ...) assigns the attribute to that namespace i.e either instance or class depending on what object refers to.
-- Attribute reference (object.attr) kicks off inheritence search in the following order: bottom to top (inheritence hierarchy), left-to-right (multiple superclasses).
+- Attribute reference (object.attr) kicks off inheritence search in the following order: bottom to top (instance -> class -> super class), left-to-right (multiple superclasses).
 - When interpreter reacher the class statement, it creates the class object and runs all its statements that result in creation of top-level attributes (fields and methods).
 - Attributes created inside methods only spring into existence when methods are run.
 - ClassName.method(instance) and instance.method() are equivalent.
@@ -44,9 +44,8 @@ ClassName.anotherMethod = someMethod(obj)         # same as above but for method
 instance = ClassName()
 instance.attrC = ...                              # possible but stupid; instance attribute: no other instances can access this attribute
 instance.methodName(0)                            # if self.attrA was not assigned (e.g. if assignment was in another function) this method call would be an error
-instance.__dict__                                 # attributes and values of this class (excludes superclass attributes)
-instance.__class__                                # has in turn another attributes such as __name__ and __bases__
-instance.__bases__                                # contains names of all super classes
+instance.__dict__                                 # access attributes of this class (excludes superclass attributes)
+instance.__class__                                # access the class object has in turn another attributes such as __name__ and __bases__
 
 # abstract class
 from abc import ABCMeta, abstractmethod

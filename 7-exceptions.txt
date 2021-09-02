@@ -1,0 +1,70 @@
+------------------------------------------------------------------------------
+Coding Exceptions
+------------------------------------------------------------------------------
+class MyException(Exception):
+    pass
+
+------------------------------------------------------------------------------
+Raising Exception
+------------------------------------------------------------------------------
+# raise an exception (an exception is a class instance)
+raise MyException()                     # raise an instance
+raise MyException                       # create and raise an instance with no constructor arguments
+raise                                   # re-raise the most recent instance
+raise MyException() from TypeError()    # attach TypeError() to MyException()'s __cause__; shown in exception message
+
+# assert
+assert test, data                       # syntactic sugar for `if not test: raise AssertionError(data)`; data is optional
+
+------------------------------------------------------------------------------
+Catch Exceptions
+------------------------------------------------------------------------------
+# try-except-else-finally statement
+try:
+    # code that could raise an exception
+except MyException:
+    # code that runs after catching a specific exception (of the type MyException) in the try clause
+except ExceptionA as e:
+    # assign instance of a specific exception to variable e
+except (ExceptionB, ExceptionC):
+    # catch any of the exceptions
+except (ExceptionD, ExceptionE) as e:
+    # catch any of the exceptions and assign instance to variable e
+except:
+    # catches all (or all other) exceptions, prefer `except Exception` to avoid catching system exits
+else:
+    # optional clause, runs when no exception occurs, can be coded if at least one except block present
+finally:
+    # optional clause, runs regardless of whether or not an exception occurs
+
+------------------------------------------------------------------------------
+Control Flow
+------------------------------------------------------------------------------
+- Raise Exception:
+    - Raise an exception using the raise statement.
+    - An exception is an instance of a class that inherits Exception.
+
+- Find try:
+    - Propagate the exception up the function call stack (zero or more levels) until a try statement is found.
+    - Stop program execution and print the exception details if no try statement is found.
+
+- Find except:
+    - Search for an except clause (from top to bottom) that contains the class reference to which the instance belongs to.
+    - If `except Exception as e` then e refers to the exception instance that was created by raise.
+    - Go to 'find try' step if except is not found (i.e. propagate the exception looking for a try)
+    
+- Execute except:
+    - Execute code inside except.
+    - Exception instance is destroyed if it is not re-raised.
+    - Go to 'find try' step if another exception is raised or the same exception is re-raised using the `raise` statement.
+
+- Execute code in else clause if no exception occurs.
+
+- Execute code in finally clause regardless of whether:
+    - an exception did not occur in try.
+    - an exception occured in try and was handled.
+    - an exception occured in try and was not handled.
+    - an exception occured while handling an exception.
+
+- Return control back to the statement immediately followed by the try statement.
+
