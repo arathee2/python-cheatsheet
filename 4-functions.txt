@@ -136,6 +136,40 @@ def f(n):
 list(f(5))                    # [0, 1, 2, 3, 4, 0, 1]
 
 ------------------------------------------------------------------------------
+Function Decorators
+------------------------------------------------------------------------------
+# using class to decorate function
+class Decorator:
+    def __init__(self, func):
+        self.calls = 0
+        self.decorated = func
+
+    def __call__(self, x):
+        self.calls += 1
+        return self.decorated(x)
+
+def square(x): return x ** 2
+square = Decorator(square)    # square is instance of Decorator; calling square(num) will execute Decorator.__call__(square, num)
+
+@Decorator                    # the @ syntax replaces the assignment shown above automatically
+def square(x): return x ** 2
+
+# using function to decorate function
+def decorator(func):
+    calls = 0
+    def decorated(x):
+        calls += 1
+        return func(x)
+    return decorated
+
+def square(x): return x ** 2
+square = decorator(square)  # square(num) will now execute decorated(num) that increments func_calls and returns square(num)
+
+@decorator                  # the @ syntax replaces assignment shown above automatically
+def square(x):
+    return x ** 2
+
+------------------------------------------------------------------------------
 Advanced Topics
 ------------------------------------------------------------------------------
 # introspection

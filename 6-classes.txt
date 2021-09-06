@@ -1,7 +1,9 @@
 ------------------------------------------------------------------------------
 Concepts
 ------------------------------------------------------------------------------
-- A class has two kinds of attributes (fields and methods): instance and class. Each of these have their own namespaces.
+- A class has two kinds of attributes: variables and methods.
+    - Variables are of two kinds: instance and class variables.
+    - Methods are of three kinds: instance, class and static methods.
 - Attributes can be created inside as well as outside the class.
 - Attribute assignment (object.attr = ...) assigns the attribute to that namespace i.e either instance or class depending on what object refers to.
 - Attribute reference (object.attr) kicks off inheritence search in the following order: bottom to top (instance -> class -> super class), left-to-right (multiple superclasses).
@@ -22,40 +24,68 @@ Concepts
 
 # Encapsulation
 - There is no notion of private or protected attributes in Python OOP.
-- All attributes are public by default.
+- All attributes can be accessed (assignment and reference) inside or outisde the class.
 
 ------------------------------------------------------------------------------
-Syntax
+Coding Classes
 ------------------------------------------------------------------------------
-class ClassName(SuperClassA, SuperClassB):        # class --> ClassName object; this statement runs all statements within class body resulting in creation of class attributes: static names and method names
-    attrA = ...                                   # class attribute (static): shared across all instances; access these using `ClassName.attrA`
-    self.attrA = ...                              # instance attribute; access these using `instance.attrA`
-    _attrA = ...                                  # pseudo private attribute: meant to be a private attribute as per convention; leading underscore has no special meaning for the interpreter
-    self._attrA                                   # pseudo private attribute is also applicable to instance attributes and methods
-    __attrA = ...                                 # name mangling: names starting with two leading underscores that don't end with two underscores are expanded to _ClassName__attrA to avoid name collision in class hierarchy
-    self.__attrA = ...                            # name mangling is applicable to instance attributes (self._ClassName__attrA) and methods (_ClassName__methodName)
-    def methodName(self, arg):                    # an attribute similar to attrA; a method; could be accessed by `ClassName.methodName` or called by `ClassName.methodName(arg)`
-        SuperClassA.methodName(self, arg)         # calls SuperClassA's methodName; without this call
-        print(self.attrA)
-        print(arg)
+# trivial example
+class MyClass():                                  # MyClass points to a class object
+    pass
 
-ClassName.attrB = ...                             # possible but stupid; class attribute: instances will be able to access this attribute
-ClassName.anotherMethod = someMethod(obj)         # same as above but for methods (remember, methods are attributes); this is why methods need `self` argument (`obj` in this case)
-instance = ClassName()
-instance.attrC = ...                              # possible but stupid; instance attribute: no other instances can access this attribute
-instance.methodName(0)                            # if self.attrA was not assigned (e.g. if assignment was in another function) this method call would be an error
-instance.__dict__                                 # access attributes of this class (excludes superclass attributes)
-instance.__class__                                # access the class object has in turn another attributes such as __name__ and __bases__
+instance_name = MyClass()                         # create instance of MyClass
 
-# abstract class
-from abc import ABCMeta, abstractmethod
-class AbstractClass(metaclass=ABCMeta):
-    @abstractmethod
-    def method():
+# real-world example
+class Manager(Person, Employee):                  # class statement runs all statements within class body resulting in creation of methods and class variables.
+
+    has_subs = True                               # class variable (= static variable): shared across all instances; access using `Manager.has_subs` as wells as `instance.has_subs`
+    self.n_subs = 1                               # instance variable: specific to each instance; access using `instance.n_subs`
+    
+    _tax_rate = 0.05                              # pseudo private variable: meant not to be accessed outside the class as per convention; leading underscore has no special meaning for the interpreter
+    self._team = 'undefined'
+    __raise = 0.15                                # name mangling: name starting with two leading underscores that doesn't end with two underscores is expanded to _Manager__salary (i.e. _ClassName__attr)  to avoid name collision in class hierarchy
+    self.__salary = 0                             # name mangled to self._Manager__salary
+    
+    def __init__(self, name, title, n_subs):      # constructor
+        Person.__init__(self, name)               # call to super class; avoid using __super__
+        Employee.__init__(self, title)            
+        self.n_subs = n_subs                      
+
+    def __str__(self):                            # operator overloading
+        return f"""{self.name},
+                   {self.title},
+                   {self.n_subs}"""
+
+    def give_bonus(self):                         # instance method: instance object is passed as the first argument
+        pass                                      # call using `instance.give_bonus()` or `Manager.give_bonus(instance)`
+
+    @classmethod
+    def num_managers(cls):                        # class method: class object is passed as the first argument -- useful for handling data local to a class (excluding subclasses)
+        pass                                      # call using `instance.num_managers()` or `Manager.num_managers()`
+
+    @staticmethod
+    def num_managers():                           # static method: neither instance nor class is passed -- useful for handling data local to a class (including all subclasses)
+        pass                                      # call using `instance.num_managers()` or `Manager.num_managers()`
+        
+    def _tax_amount(self):                        # pseudo private method: meant to be used inside this class; overriding this is possible
         pass
-abstract = AbstractClass()                        # error! classes with abstract method cannot be instantiated; define a subclass that defiend this method and instantiate that subclass
 
-# operator overloading
+    def __get_clubs(self):                        # name mangled to self._Manager__get_clubs(); overriding is not possible because name mangling results in a unique name at runtime
+        pass
+
+Manager.gender = 'undefined'                      # class attributes can be assigned outside the class too
+Manager.identity = lambda x: return x             # class method being assigned outside the class
+
+peter = Manager("Peter", "Tech Lead", 3)          # create instance of class with arguments to the constructor
+peter.age = 35                                    # instance attributes can be assigned outside the class; refer using
+peter.get_subs = lambda self: self.n_subs         # instance method being assigned outside the class
+
+peter.__dict__                                    # access attributes of this class (excludes superclass attributes)
+peter.__class__                                   # access the class object has in turn another attributes such as __name__ and __bases__; equivalent to `type(peter)`
+
+------------------------------------------------------------------------------
+Operator Overloading
+------------------------------------------------------------------------------
 class Person:
       def __init__(self, name, age):              #  constructor
           self.name = name
@@ -65,9 +95,6 @@ class Person:
           pass
 
       def __add__(self, other):                   # invoked when `instance + other`; could return any type of result
-          pass
-
-      def __sub__(self, other):                   # invoked when `instance - other`
           pass
 
       def __radd(self, other):                    # invoked when `other + instance` 
@@ -118,7 +145,7 @@ class Person:
              del self.__dict__[attrname]
           else:
           raise AttributeError(attrname,
-          ' does not exist!')
+          'does not exist!')
 
       def __lt__(self, other):                    # invoked when `object < other`; all comparison operators have their correponding methods
           return self.data < other
@@ -132,27 +159,27 @@ class Person:
       def __index__(self):                        # invoked when bin(instance), oct(instance) and hex(instance) is encountered
           return hash
 
-      def set_name(name):
-          self.name = name
-          
-      def get_name(self):
-          return self.name
-
       def __str__(self):                          # returns string representation of object when `print(object)` and `str(object)`
           return string_representation
 
       def __repr__(self):                         # returns a string when `repr(object)` that shows how the object was constructed; used as fallback when __str__ is not present
           return repr_representation
 
-      def _method_name(self):                     # method name starting with _ are meant to be used within this class; overriding these is possible; use __ to avoid overriding
-          ...
+------------------------------------------------------------------------------
+Abstract Class
+------------------------------------------------------------------------------
+from abc import ABCMeta, abstractmethod
+class AbstractClass(metaclass=ABCMeta):
+    @abstractmethod
+    def method():
+        pass
 
-      def __method_name(self):                    # this method name is expanded to _Person.__method_name to avoid name clash when overriding this method
-          ...
+abstract = AbstractClass()                        # error! classes with abstract method cannot be instantiated; define a subclass that defiend this method and instantiate that subclass
 
-class Manager(Person):
-      def get_name():
-          Person.get_name(self, 'Mgr ' + name)    # calling parent's method
+------------------------------------------------------------------------------
 
-manager = Manager('John', 40)
+------------------------------------------------------------------------------
+- Slots: Define what attributes is the class allowed to have.
+- Properties: Define what methods to invoke upon getting, setting, deleting and asking for docs of a specific attribute.
+- Class Decorators and Metaclasses: Classes are instance of metaclasses. 
 

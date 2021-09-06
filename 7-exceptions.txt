@@ -2,7 +2,11 @@
 Coding Exceptions
 ------------------------------------------------------------------------------
 class MyException(Exception):
-    pass
+    def __init__(self):                 # overload this for exception specific use case
+        pass                            # Exception's __init__'s `args` attribute collects all arguments in a tuple
+    
+    def __str__(self):                  # overload this for exception specific use case
+        pass                            # Exception's __str__ prints constructor arguments stored in `args` tuple
 
 ------------------------------------------------------------------------------
 Raising Exception
@@ -26,12 +30,15 @@ except MyException:
     # code that runs after catching a specific exception (of the type MyException) in the try clause
 except ExceptionA as e:
     # assign instance of a specific exception to variable e
+    print(e.args)                       # args contains arguments passed to the exception instance constructor
+    print(e)                            # prints string returned by the __str__  method
 except (ExceptionB, ExceptionC):
     # catch any of the exceptions
 except (ExceptionD, ExceptionE) as e:
     # catch any of the exceptions and assign instance to variable e
 except:
     # catches all (or all other) exceptions, prefer `except Exception` to avoid catching system exits
+    print(sys.exc_info()[0])            # sys.exc_info returns exception's (type, value, traceback); useful when we don't have a variable that points to the exception instance
 else:
     # optional clause, runs when no exception occurs, can be coded if at least one except block present
 finally:
@@ -67,4 +74,34 @@ Control Flow
     - an exception occured while handling an exception.
 
 - Return control back to the statement immediately followed by the try statement.
+
+------------------------------------------------------------------------------
+Try-Finally Alternative
+------------------------------------------------------------------------------
+# syntax
+with expression [as var]:                 # as var is optional and refers object created by the expression
+    # code that could raise an exception
+
+# example
+with open(filepath, mode) as fin:
+    # code that could raise an exception
+
+# control flow
+- Assign object created from the reference to var if present.
+- Run code in object's __enter__ method.
+- Run code inside with statement.
+- Run code in object's __exit__ method regardless of whether or not an exception occurs.
+    - If an exception does not occur, run __exit__ and then the code that follows the with statement.
+    - If an exception occurs, run __exit__ and raise the exception.
+
+------------------------------------------------------------------------------
+Tips
+------------------------------------------------------------------------------
+- Don't be to generic while handling exceptions -- careful while using `except` or `except Exception` since they mask exceptions that you don't want to be handled silently!
+    - `except` handles SystemExit and KeyboardInterrupt exceptions.
+    - `except Exception` handles SyntaxError exception.
+- Don't be too specific while handling exceptions -- one needs to add more `except NewExceptionName` statements later if code raises new exceptions in the future.
+- A good rule of thumb is to design an exception class heirarchy specific to your program:
+    - `except ExceptionSuperClass` catches all errors related to your program.
+    - `except ExceptionSubClass` catches specific errors related to your program.
 
