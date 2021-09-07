@@ -3,8 +3,8 @@ Basics
 ------------------------------------------------------------------------------
 # syntax
 def fname(arguments):  # fname points to a function object after def is executed
-	# code
-	return object      # return statemenet is optional; yield is alternative
+    # code
+    return object      # return statemenet is optional; yield is alternative
 
 - `def` is executed when the module containing it is imported or the script is run. It creates a function object. The function name points to the function object.
 - `return` is optional. You could either have no return statement or return followed by nothing (None is returned in both cases).
@@ -24,9 +24,9 @@ b(a)                   # a is a function object; a() is a function call
 
 # nested functions: avoid them
 def maker(N):
-	def action(X):     # creates a function object
-		return X ** N
-	return action
+    def action(X):     # creates a function object
+        return X ** N
+    return action
 func = maker(2)        # func --> action function object; on the contrary `func = maker` means func --> maker function object
 func(5)                # returns 5 ** 2
 
@@ -74,7 +74,7 @@ Arguments
 ------------------------------------------------------------------------------
 # arguments are always passed by assignment.
 def f(a, b): ...
-f(3, 4)           # a --> 3, b --> 4
+f(3, 4)                       # a --> 3, b --> 4
 
 # positional arguments: the default, matched from left to right
 def func(name): ...
@@ -111,12 +111,12 @@ Generators
 ------------------------------------------------------------------------------
 # generator functions
 def f(n):                     # f --> generator object; produces results one at a time on-demand
-	for i in range(n):        # generators retain local scope and code position in memory
-		yield i ** 2          # yield statement returns an iterator that remembers where it left off
+    for i in range(n):        # generators retain local scope and code position in memory
+        yield i ** 2          # yield statement returns an iterator that remembers where it left off
 
 seq = f(i)                    # function call returns a generator object that supports __next__()
 for i in seq:                 # seq makes f(n) run in each iteration; computation time is split across result requests
-	print(i)
+    print(i)
 
 x = f(3)                      # x is a generator object; generators are their own iterators
 x.__next__()                  # yield returns 0
@@ -130,8 +130,8 @@ x.__next__()                  # raises StopIteration exception because for i in 
 
 # [optional] multiple yields
 def f(n):
-	for i in range(n)         # alternative `yield from range(n)`
-	for i in range(2)         # this runs after the above statement encounters StopIteration
+    for i in range(n)         # alternative `yield from range(n)`
+        for i in range(2)     # this runs after the above statement encounters StopIteration
 
 list(f(5))                    # [0, 1, 2, 3, 4, 0, 1]
 
