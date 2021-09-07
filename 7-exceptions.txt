@@ -38,7 +38,10 @@ except (ExceptionD, ExceptionE) as e:
     # catch any of the exceptions and assign instance to variable e
 except:
     # catches all (or all other) exceptions, prefer `except Exception` to avoid catching system exits
-    print(sys.exc_info()[0])            # sys.exc_info returns exception's (type, value, traceback); useful when we don't have a variable that points to the exception instance
+    print(sys.exc_info()[0])            # sys.exc_info returns exception's (type, value, traceback_object); useful when we don't have a variable that points to the exception instance
+    import traceback as t
+    t.print_tb(sys.exc_info[2])
+    t.print_exception(*sys.exc_info())  # equivalent shorthand `traceback.print_exc()` automatically passes the arguments passed here
 else:
     # optional clause, runs when no exception occurs, can be coded if at least one except block present
 finally:

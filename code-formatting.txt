@@ -1,0 +1,12 @@
+------------------------------------------------------------------------------
+PyLint: Rates your code and tells what could be improved
+------------------------------------------------------------------------------
+pip install pylint
+$pylint module_or_filename
+
+------------------------------------------------------------------------------
+Black: Opinionated code formatter
+------------------------------------------------------------------------------
+pip install black
+$black module_or_filename
+

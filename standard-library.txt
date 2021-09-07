@@ -1,4 +1,84 @@
 ------------------------------------------------------------------------------
+Debugging
+------------------------------------------------------------------------------
+import pdb
+pdb.run(statement)            # execute statement under debugger control
+pdb.runeval(expression)       # execute expression under debugger control
+pdb.runcall(function_obj)     # execute function under debugger control             
+
+pdb.set_trace()               # start debugger at this point in program
+breakpoint()                  # start debugger at this point in program; equivalent to pdb.set_trace()
+
+pdb.post_mortem(tb)           # use debugger to debug traceback which defaults to the current exception
+
+# commands
+h(elp) [command]
+q(uit)                                 # quit debugger
+
+b(reak) [line|function] [, condition]  # set breakpoint on a line number of function, returns breakpoint number
+condition bpnumber [condition]         # set condition (an expression that must be true for breakpoint to occur), removes all conditions if no condition is passed
+ignore bpnumber [count]                # ignore breakpoint count times
+tbreak                                 # temporary breakpoint, removed after first hit
+cl(ear)                                # clear breakpoints by line number or breakpoint number
+disable                                # disable breakpoints by breakpoint number
+enable                                 # enable breakpoints by breakpoint number
+
+s(tep)                                 # execute current line (steps inside a function) and stop
+n(ext)                                 # execute current line (does not step inside a function) and stop
+un(til) line                           # execute until line number
+r(eturn)                               # execute until current function returns
+c(ont(inue))                           # execute until breakpoint occurs
+
+p expression                           # evaluate and print expression
+pp expression                          # evaulate and pretty print expression
+display [expression]                   # print expression if changed
+undisplay [expression]                 # undo display command
+a(rgs)                                 # print arguments of current function
+l(ist) [startline[, endline]]          # list source code around current or specified lines
+
+u(p) [count]                           # go up count stackframes
+d(own)                                 # go down count stackframes
+
+------------------------------------------------------------------------------
+Unit Testing
+------------------------------------------------------------------------------
+import unittest
+
+------------------------------------------------------------------------------
+Type Hints
+------------------------------------------------------------------------------
+from typing import List, Tuple, Dict, Set, Sequence, Iterable, Optional, Any
+Bean = List[int]
+Cube = Union[str, float]               # could be str or float
+ReturnType = Optional[str]             # equivalent to Union[str, None]
+def process(name: Tuple[str, str],
+            age: int,
+            beans: Sequence[Bean],
+            cubes: Set[Cube],
+            gem: Any) -> ReturnType:   # Any is vague and not encouraged
+    pass
+
+# declare type variable
+from typing import TypeVar
+AType = TypeVar('AType', float, str)   # could either be str or float; linters try to infer such arguments to be as specific as possible
+
+------------------------------------------------------------------------------
+Virtual Environment
+------------------------------------------------------------------------------
+$python -m venv virtual_env_dir
+$source virtual_env_dir/bin/activate
+$pip install -r requirements.txt
+$deactivate
+
+------------------------------------------------------------------------------
+Profiling
+------------------------------------------------------------------------------
+$python -m cProfile [-o output_file] [-s sort_order] (-m module | myscript.py)
+
+import cProfile
+cProfile.run('for i in range(1000)')
+
+------------------------------------------------------------------------------
 Benchmark
 ------------------------------------------------------------------------------
 import time
