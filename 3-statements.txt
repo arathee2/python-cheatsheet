@@ -87,11 +87,11 @@ Conditionals
 ------------------------------------------------------------------------------
 # if statement
 if expression:
-	# code
+    # code
 elif expression:
-	# code
+    # code
 else:
-	# code
+    # code
 
 # ternary expression
 Y if X else Z
@@ -100,58 +100,58 @@ Y if X else Z
 While Loop
 ------------------------------------------------------------------------------
 while condition:          # condition evaluates to True or False
-	# code
+    # code
 else:                     # optional else
-	# code                # run if loop if exited normally i.e. without encountering break
+    # code                # run if loop if exited normally i.e. without encountering break
                           # also runs if while loop never ran (because did not run break in this case)
 
 while test:
-	if condition:
-		# code
-		break
+    if condition:
+        # code
+        break
 else:                     # runs if break was not encountered i.e. condition was never met
-	# code
+    # code
 
 ------------------------------------------------------------------------------
 For Loop
 ------------------------------------------------------------------------------
 for target in iterable:
-	# code
+    # code
 else:
-	# code                # runs if for did not encounter a break statement
+    # code                # runs if for did not encounter a break statement
 
 
 for x in range(len(iterable)):
-	# code
+    # code
 
 for (a, *b) in iterable:
-	# code
+    # code
 
 for (index, item) in enumerate(iterable):
-	 # code
+    # code
 
 for (itemA, itemB) in zip(listA, listB):
-	# code
+    # code
 
 ------------------------------------------------------------------------------
 Break, Continue and Pass
 ------------------------------------------------------------------------------
 # pass
 def f():
-	pass       # an empty placeholder, does nothing
+    pass       # an empty placeholder, does nothing
 
 # break
 while condition:
-	break      # exits the innermost enclosing loop
+    break      # exits the innermost enclosing loop
 
 # continue
 while condition:
-	continue   # goes to the header of innermost enclosing loop
+    continue   # goes to the header of innermost enclosing loop
 
 # ellipses
 x = ...        # acts as None
 def f():
-	...        # acts as pass
+    ...        # acts as pass
 
 ------------------------------------------------------------------------------
 Iterators
@@ -203,5 +203,5 @@ Miscellaneous
 ------------------------------------------------------------------------------
 # multiline statements
 x = (a +
-	 b +
-	 c)  # a statement doesn't end until it encounters closing the bracket; indentation doesn't matter here
+     b +
+     c)  # a statement doesn't end until it encounters closing the bracket; indentation doesn't matter here
