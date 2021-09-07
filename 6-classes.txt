@@ -43,7 +43,7 @@ class Manager(Person, Employee):                  # class statement runs all sta
     
     _tax_rate = 0.05                              # pseudo private variable: meant not to be accessed outside the class as per convention; leading underscore has no special meaning for the interpreter
     self._team = 'undefined'
-    __raise = 0.15                                # name mangling: name starting with two leading underscores that doesn't end with two underscores is expanded to _Manager__salary (i.e. _ClassName__attr)  to avoid name collision in class hierarchy
+    __raise = 0.15                                # name mangling: name starting with two leading underscores that doesn't end with two underscores is expanded to _Manager__raise (i.e. _ClassName__attr)  to avoid name collision in class hierarchy
     self.__salary = 0                             # name mangled to self._Manager__salary
     
     def __init__(self, name, title, n_subs):      # constructor
@@ -177,7 +177,7 @@ class AbstractClass(metaclass=ABCMeta):
 abstract = AbstractClass()                        # error! classes with abstract method cannot be instantiated; define a subclass that defiend this method and instantiate that subclass
 
 ------------------------------------------------------------------------------
-
+Advanced
 ------------------------------------------------------------------------------
 - Slots: Define what attributes is the class allowed to have.
 - Properties: Define what methods to invoke upon getting, setting, deleting and asking for docs of a specific attribute.

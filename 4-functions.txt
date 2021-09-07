@@ -56,18 +56,18 @@ Variable lookup order in a function is: local --> nonlocal --> global --> builti
 # global
 X = 88              # global X
 def func():
-	global X        # refers and changes global X; searches global and then builtins; don't have to pre-exist
-	X = 99          # global X: outside def
+    global X        # refers and changes global X; searches global and then builtins; don't have to pre-exist
+    X = 99          # global X: outside def
 func()
 print(X)            # prints 99
 
 # nonlocal
 def a():
-	x = 3
-	def b():
-		nonlocal x   # refers and changes x from enclosing scope; searches enclosing scopes only inner to outer (skipping its own scope, global and builtins); have to pre-exist in enclosing scope
-		x += 1       # allowed to change it if nonlocal
-	return nested
+    x = 3
+    def b():
+        nonlocal x   # refers and changes x from enclosing scope; searches enclosing scopes only inner to outer (skipping its own scope, global and builtins); have to pre-exist in enclosing scope
+	x += 1       # allowed to change it if nonlocal
+    return nested
 
 ------------------------------------------------------------------------------
 Arguments

@@ -12,7 +12,7 @@ Importing Modules and Packages
 - Module and package names must follow Python variable name convention since these names become variable names when imported.
 - Scope-wise, an importer can only see the code inside importee after importing. An importee can never see code inside importer.
 
-3-step process to find modules and packages:
+3-step process to import modules and packages:
 1. Modules are .py files, packages are directories that contain __init__.py file. Order to search module and package names is as follows:
 	1a. Home directory [Automatic]: Directory that contains program's main script.
 	1b. PYTHONPATH directories [Manual]: A shell environment variable that contails a list of directory paths separated by colons on Unix and semicolons on Windows. E.g. export PYTHONPATH '/dirA:/dirB'
@@ -111,7 +111,7 @@ pname                                # pname is accesible for namespace packages
 ------------------------------------------------------------------------------
 Advanced
 ------------------------------------------------------------------------------
-# module attrbiutes
+# module attributes
 - __name__: If file is run as a top-level program, __name__ is '__main__' else it is the name of the module without the .py extension.
 - __file__: Contains filepath of a module.
 
