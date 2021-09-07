@@ -59,16 +59,16 @@ Multi-line Statements
 ------------------------------------------------------------------------------
 # use brackets to span lines on multiple lines
 a = [1,
-	 2,
-	 3]        # works for lists and list comprehensions
+     2,
+     3]        # works for lists and list comprehensions
 
 b = (1,
-	 2,
-	 3)        # works for tuples, generator expressions, expressions and function arguments
+     2,
+     3)        # works for tuples, generator expressions, expressions and function arguments
 
 c = {1,
-	 2,
-	 3}        # works for dictionaries, sets and their comprehensions
+     2,
+     3}        # works for dictionaries, sets and their comprehensions
 
 # outdated
 a = 1 + 2 + \  # ensure no space after \
@@ -76,11 +76,11 @@ a = 1 + 2 + \  # ensure no space after \
 
 # special case for multi-line strings
 a = ('hello'
-	 'world')  # no explicit presence of '+' means string concatenation
+     'world')  # no explicit presence of '+' means string concatenation
 
 b = """
-	this is a multiline string
-	"""
+    this is a multiline string
+    """
 
 ------------------------------------------------------------------------------
 Conditionals
