@@ -174,8 +174,8 @@ len(s)
 
 # type-specific method
 A.add(item)     # insert item
-A.remove(item)  # merge: in-place union
-A.update(B)     # remove item
+A.remove(item)  # remove item
+A.update(B)     # merge: in-place union
 A & B           # or A.intersection(B); methods allow any iterable, set notation does not
 A | B           # or A.union(B); methods allow any iterable, set notation does not
 A - B           # or A.difference(B); methods allow any iterable, set notation does not
