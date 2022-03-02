@@ -47,20 +47,47 @@ import unittest
 ------------------------------------------------------------------------------
 Type Hints
 ------------------------------------------------------------------------------
-from typing import List, Tuple, Dict, Set, Sequence, Iterable, Optional, Any
-Bean = List[int]
-Cube = Union[str, float]               # could be str or float
-ReturnType = Optional[str]             # equivalent to Union[str, None]
-def process(name: Tuple[str, str],
-            age: int,
-            beans: Sequence[Bean],
-            cubes: Set[Cube],
-            gem: Any) -> ReturnType:   # Any is vague and not encouraged
-    pass
+x: int = 1
+x: float = 1.0
+x: bool = True
+x: str = "test"
+x: bytes = b"test"
 
-# declare type variable
+from typing import List, Tuple, Set, Dict
+x: List[int] = [1]
+x: Tuple[int, ...] = (1, 2, 3)
+x: Tuple[str, int] = ("string", 2)
+x: Set[int] = {6, 7}
+x: Dict[str, float] = {'field': 1.0}
+
+from typing import Mapping, MutableMapping
+x: Mapping[str, int]                   # a Dict[str, int] like object that will not be mutated; has a __getitem__ method 
+x: MutableMApping[str, int]            # a Dict[str, int] like object that could be mutated; has both __getitem__ and __setitem__ methods
+
+from typing import Sequence, Iterable
+x: Sequence[int] = [1, 2, 3]           # Sequences have __len__ and __getitem__ methods
+x: Iterable[int] = [1, 2, 3]           # Iterables have __iter__ method which returns an iterator
+
+from typing import Iterator, Callable
+def number_generator(start: int, end: int) -> Iterator[int]:
+    ...
+gen: Callable[[int, int], Iterator[int]] = number_generator
+x: int = gen(start=1, end=5)
+
+from typing import Union, Optional, Any
+x: Union[str, float, bool]             # x could be either of these types
+x: Optional[str]                       # x could either be str or None; equivalent to Union[str, None]
+x: Any                                 # x could be any type, used when a variable is too dynamic to assign a type
+
+from typing import IO
+x: IO[str] = open(FILEPATH)            # an IO object
+
 from typing import TypeVar
-AType = TypeVar('AType', float, str)   # could either be str or float; linters try to infer such arguments to be as specific as possible
+MyType = TypeVar('MyType', int, str)   # could either be int or str; linters try to infer such arguments to be as specific as possible
+
+class MyClass:
+    def __init__(self) -> None:        # do not annotate self; __init__ returns None 
+        ...
 
 ------------------------------------------------------------------------------
 Virtual Environment
